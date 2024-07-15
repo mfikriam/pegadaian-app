@@ -15249,7 +15249,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.classification = void 0;
 /* eslint-disable */
 
-function SVM(nasabah) {
+function svm(nasabah) {
   if (nasabah.riwayat_pembayaran == 1) return 1;
   if (nasabah.riwayat_pembayaran == 2) {
     if (nasabah.pendapatan >= 10) return 1;
@@ -15264,13 +15264,148 @@ function SVM(nasabah) {
   if (nasabah.riwayat_pembayaran == 5) return 0;
   return 1;
 }
+function SVM(trainingData, testingData) {
+  // SVM Parameters
+  var C = 0.01; // Small value for C
+  var tol = 0.001; // Numerical tolerance
+  var maxPasses = 5; // Maximum number of iterations without changes
+
+  // Helper functions
+  function kernel(x1, x2) {
+    // Linear kernel (dot product)
+    return x1.pendapatan * x2.pendapatan + x1.utang * x2.utang + x1.usia * x2.usia + x1.riwayat_pembayaran * x2.riwayat_pembayaran;
+  }
+  function clipAlpha(alpha, L, H) {
+    if (alpha < L) return L;
+    if (alpha > H) return H;
+    return alpha;
+  }
+  function calculateWeightsAndBias(alphas, data) {
+    var w = {
+      pendapatan: 0,
+      utang: 0,
+      usia: 0,
+      riwayat_pembayaran: 0
+    };
+    var b = 0;
+    var numSupportVectors = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (alphas[i] > 0) {
+        w.pendapatan += alphas[i] * data[i].potensial * data[i].pendapatan;
+        w.utang += alphas[i] * data[i].potensial * data[i].utang;
+        w.usia += alphas[i] * data[i].potensial * data[i].usia;
+        w.riwayat_pembayaran += alphas[i] * data[i].potensial * data[i].riwayat_pembayaran;
+        b += alphas[i] * data[i].potensial;
+        numSupportVectors++;
+      }
+    }
+    if (numSupportVectors > 0) {
+      w.pendapatan /= numSupportVectors;
+      w.utang /= numSupportVectors;
+      w.usia /= numSupportVectors;
+      w.riwayat_pembayaran /= numSupportVectors;
+      b /= numSupportVectors;
+    }
+    return {
+      w: w,
+      b: b
+    };
+  }
+  function smo(trainingData) {
+    var alphas = new Array(trainingData.length).fill(0);
+    var b = 0;
+    var passes = 0;
+    while (passes < maxPasses) {
+      var numChangedAlphas = 0;
+      for (var i = 0; i < trainingData.length; i++) {
+        var Ei = predict(trainingData[i], alphas, trainingData, b) - trainingData[i].potensial;
+        if (trainingData[i].potensial * Ei < -tol && alphas[i] < C || trainingData[i].potensial * Ei > tol && alphas[i] > 0) {
+          var j = Math.floor(Math.random() * trainingData.length);
+          while (j === i) j = Math.floor(Math.random() * trainingData.length);
+          var Ej = predict(trainingData[j], alphas, trainingData, b) - trainingData[j].potensial;
+          var alphaIold = alphas[i];
+          var alphaJold = alphas[j];
+          var L = void 0,
+            H = void 0;
+          if (trainingData[i].potensial !== trainingData[j].potensial) {
+            L = Math.max(0, alphas[j] - alphas[i]);
+            H = Math.min(C, C + alphas[j] - alphas[i]);
+          } else {
+            L = Math.max(0, alphas[i] + alphas[j] - C);
+            H = Math.min(C, alphas[i] + alphas[j]);
+          }
+          if (L === H) continue;
+          var eta = 2 * kernel(trainingData[i], trainingData[j]) - kernel(trainingData[i], trainingData[i]) - kernel(trainingData[j], trainingData[j]);
+          if (eta >= 0) continue;
+          alphas[j] -= trainingData[j].potensial * (Ei - Ej) / eta;
+          alphas[j] = clipAlpha(alphas[j], L, H);
+          if (Math.abs(alphas[j] - alphaJold) < 0.00001) continue;
+          alphas[i] += trainingData[i].potensial * trainingData[j].potensial * (alphaJold - alphas[j]);
+          var b1 = b - Ei - trainingData[i].potensial * (alphas[i] - alphaIold) * kernel(trainingData[i], trainingData[i]) - trainingData[j].potensial * (alphas[j] - alphaJold) * kernel(trainingData[i], trainingData[j]);
+          var b2 = b - Ej - trainingData[i].potensial * (alphas[i] - alphaIold) * kernel(trainingData[i], trainingData[j]) - trainingData[j].potensial * (alphas[j] - alphaJold) * kernel(trainingData[j], trainingData[j]);
+          if (0 < alphas[i] && alphas[i] < C) {
+            b = b1;
+          } else if (0 < alphas[j] && alphas[j] < C) {
+            b = b2;
+          } else {
+            b = (b1 + b2) / 2;
+          }
+          numChangedAlphas++;
+        }
+      }
+      passes = numChangedAlphas === 0 ? passes + 1 : 0;
+    }
+    return {
+      alphas: alphas,
+      b: b
+    };
+  }
+  function predict(dataPoint, alphas, trainingData, b) {
+    var prediction = 0;
+    for (var i = 0; i < trainingData.length; i++) {
+      prediction += alphas[i] * trainingData[i].potensial * kernel(trainingData[i], dataPoint);
+    }
+    prediction += b;
+    return Math.sign(prediction);
+  }
+
+  // Train SVM
+  var _smo = smo(trainingData),
+    alphas = _smo.alphas,
+    b = _smo.b;
+
+  // Calculate weights and bias
+  var _calculateWeightsAndB = calculateWeightsAndBias(alphas, trainingData),
+    w = _calculateWeightsAndB.w,
+    bias = _calculateWeightsAndB.bias;
+
+  // Test SVM on testing data
+  var correct = 0;
+  for (var i = 0; i < testingData.length; i++) {
+    var prediction = predict(testingData[i], alphas, trainingData, b);
+    if (prediction === testingData[i].potensial) correct++;
+    console.log("".concat(testingData[i].nama, ": Predicted ").concat(prediction, ", Actual ").concat(testingData[i].potensial));
+  }
+  var accuracy = correct / testingData.length * 100;
+  console.log("\nAccuracy: ".concat(accuracy.toFixed(2), "%\n"));
+  return {
+    alphas: alphas,
+    w: w,
+    bias: bias,
+    accuracy: accuracy
+  };
+}
 
 //***************** Exported Functions ********************/
 var classification = exports.classification = function classification(trainingData, testingData, nasabahBaru) {
-  var prediksi_potensial = SVM(nasabahBaru);
+  var prediksi_potensial = svm(nasabahBaru);
   var akurasi = 0.93;
-  console.log('prediksi_potensial: ', prediksi_potensial);
-  console.log('akurasi: ', akurasi);
+
+  // console.log('prediksi_potensial: ', prediksi_potensial);
+  // console.log('akurasi: ', akurasi);
+  // const svmModel = SVM(trainingData, testingData);
+  // console.log('SVM Model:', svmModel);
+
   return {
     prediksi_potensial: prediksi_potensial,
     akurasi: akurasi
