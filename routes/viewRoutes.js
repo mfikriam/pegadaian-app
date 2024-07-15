@@ -3,8 +3,8 @@ const viewController = require('./../controllers/viewController');
 
 const router = express.Router();
 
-router.get('/', viewController.getPegawaiPage);
-router.get('/pegawai', viewController.getPegawaiPage);
-router.get('/pengaju', viewController.getPengajuPage);
+router.get('/', viewController.getNasabahLamaPage);
+router.get('/nasabah-lama', viewController.getNasabahLamaPage);
+router.get('/nasabah-baru', viewController.getNasabahBaruPage);
 
 module.exports = router;

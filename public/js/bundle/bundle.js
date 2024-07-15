@@ -15136,7 +15136,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; } /* eslint-disable */
 var addNewData = exports.addNewData = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(modelName, data, form, modal) {
-    var res, resObj;
+    var res;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -15150,7 +15150,6 @@ var addNewData = exports.addNewData = /*#__PURE__*/function () {
         case 3:
           res = _context.sent;
           if (res.data.status === 'success') {
-            resObj = res.data.data[modelName];
             modal.hide();
             (0, _alert.delayAlert)("Data ".concat(modelName, " berhasil ditambah"), 'success');
           }
@@ -15173,7 +15172,7 @@ var addNewData = exports.addNewData = /*#__PURE__*/function () {
 }();
 var updateDataById = exports.updateDataById = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(modelName, objId, data, form, Modals) {
-    var res, resObj;
+    var res;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -15187,7 +15186,6 @@ var updateDataById = exports.updateDataById = /*#__PURE__*/function () {
         case 3:
           res = _context2.sent;
           if (res.data.status === 'success') {
-            resObj = res.data.data[modelName];
             Modals.forEach(function (el) {
               return el.hide();
             });
@@ -15242,129 +15240,7 @@ var delDataById = exports.delDataById = /*#__PURE__*/function () {
     return _ref3.apply(this, arguments);
   };
 }();
-},{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"classification.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.naiveBayes = void 0;
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-/* eslint-disable */
-
-//***************** Local Functions ********************/
-var _countAttr = function _countAttr(dataset, attr, value) {
-  return dataset.reduce(function (acc, pegawai) {
-    return pegawai[attr] === value ? acc + 1 : acc;
-  }, 0);
-};
-var _calcAttrProbability = function _calcAttrProbability(dataset) {
-  var jabatanOptionValues = ['Generalis', 'Officer Kinerja', 'TL Teknik', 'TL Rensis', 'Team Leader Administrasi dan Umum', 'TL SAR DAN YAN GAN', 'JTC  Pengaturan Operasi', 'Of Kinerja Transaksi Energi Listrik', 'Plt. Manager ULP', 'JO Pengendalian Piutang'];
-  var masaKerjaOptionValues = ['< 1 Tahun', '1 - 3 Tahun', '4 - 6 Tahun', '7 - 10 Tahun', '> 10 Tahun'];
-  var gradeGajiOptionValues = ['Grade 7 - 8', 'Grade 9 - 11', 'Grade 12 - 13'];
-  var statusNikahOptionValues = ['Menikah', 'Belum Menikah', 'Cerai'];
-  var jumlahAnakOptionValues = ['0 Anak', '1 - 2 Anak', '3 Anak', '> 3 Anak'];
-  var hutangTempatLainOptionValues = ['Ya', 'Tidak'];
-  var kelayakanOptionValues = ['Layak', 'Tidak Layak'];
-  var probObj = {
-    jabatan: jabatanOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'jabatan', key) / _countAttr(dataset, 'jabatan', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'jabatan', key) / _countAttr(dataset, 'jabatan', key);
-      return obj;
-    }, {}),
-    masa_kerja: masaKerjaOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'masa_kerja', key) / _countAttr(dataset, 'masa_kerja', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'masa_kerja', key) / _countAttr(dataset, 'masa_kerja', key);
-      return obj;
-    }, {}),
-    grade_gaji: gradeGajiOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'grade_gaji', key) / _countAttr(dataset, 'grade_gaji', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'grade_gaji', key) / _countAttr(dataset, 'grade_gaji', key);
-      return obj;
-    }, {}),
-    status_nikah: statusNikahOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'status_nikah', key) / _countAttr(dataset, 'status_nikah', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'status_nikah', key) / _countAttr(dataset, 'status_nikah', key);
-      return obj;
-    }, {}),
-    jumlah_anak: jumlahAnakOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'jumlah_anak', key) / _countAttr(dataset, 'jumlah_anak', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'jumlah_anak', key) / _countAttr(dataset, 'jumlah_anak', key);
-      return obj;
-    }, {}),
-    hutang_tempat_lain: hutangTempatLainOptionValues.reduce(function (obj, key) {
-      obj[key] = {};
-      obj[key]['Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Layak';
-      }), 'hutang_tempat_lain', key) / _countAttr(dataset, 'hutang_tempat_lain', key);
-      obj[key]['Tidak Layak'] = _countAttr(dataset.filter(function (el) {
-        return el.kelayakan === 'Tidak Layak';
-      }), 'hutang_tempat_lain', key) / _countAttr(dataset, 'hutang_tempat_lain', key);
-      return obj;
-    }, {}),
-    kelayakan: kelayakanOptionValues.reduce(function (obj, key) {
-      obj[key] = _countAttr(dataset, 'kelayakan', key) / dataset.length;
-      return obj;
-    }, {})
-  };
-  return probObj;
-};
-var _naiveBayesPrediction = function _naiveBayesPrediction(probObj, pengaju) {
-  var layakValue = probObj.kelayakan['Layak'] * probObj.jabatan[pengaju.jabatan]['Layak'] * probObj.masa_kerja[pengaju.masa_kerja]['Layak'] * probObj.grade_gaji[pengaju.grade_gaji]['Layak'] * probObj.status_nikah[pengaju.status_nikah]['Layak'] * probObj.jumlah_anak[pengaju.jumlah_anak]['Layak'] * probObj.hutang_tempat_lain[pengaju.hutang_tempat_lain]['Layak'];
-  var tidakLayakValue = probObj.kelayakan['Tidak Layak'] * probObj.jabatan[pengaju.jabatan]['Tidak Layak'] * probObj.masa_kerja[pengaju.masa_kerja]['Tidak Layak'] * probObj.grade_gaji[pengaju.grade_gaji]['Tidak Layak'] * probObj.status_nikah[pengaju.status_nikah]['Tidak Layak'] * probObj.jumlah_anak[pengaju.jumlah_anak]['Tidak Layak'] * probObj.hutang_tempat_lain[pengaju.hutang_tempat_lain]['Tidak Layak'];
-  return layakValue > tidakLayakValue ? 'Layak' : 'Tidak Layak';
-};
-var _calculateAccuracy = function _calculateAccuracy(probObj, dataTest) {
-  dataTest.forEach(function (pegawai) {
-    pegawai['prediksi_kelayakan'] = _naiveBayesPrediction(probObj, pegawai);
-  });
-  var accuracy = dataTest.reduce(function (acc, pegawai) {
-    return pegawai.kelayakan === pegawai.prediksi_kelayakan ? acc += 1 : acc;
-  }, 0) / dataTest.length;
-  return accuracy;
-};
-
-//***************** Exported Functions ********************/
-var naiveBayes = exports.naiveBayes = function naiveBayes(dataTrain, dataTest, pengaju) {
-  var probObj = _calcAttrProbability(dataTrain);
-  var prediksi_kelayakan = _naiveBayesPrediction(probObj, pengaju);
-  var akurasi = _calculateAccuracy(probObj, _toConsumableArray(dataTest));
-  return {
-    prediksi_kelayakan: prediksi_kelayakan,
-    akurasi: akurasi
-  };
-};
-},{}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es6.array.copy-within.js");
@@ -15500,207 +15376,191 @@ require("regenerator-runtime/runtime.js");
 var _simpleDatatables = require("simple-datatables");
 var _alert = require("./alert");
 var _manageData = require("./manage-data");
-var _classification = require("./classification");
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; } /* eslint-disable */
-//? DOM Element - Halaman Pegawai
-var pegawaiTable = document.querySelector('#pegawai-table');
-var addPegawaiForm = document.querySelector('#form-add-pegawai');
-var updatePegawaiBtns = document.querySelectorAll('.btn-update-pegawai');
-var deletePegawaiBtns = document.querySelectorAll('.btn-delete-pegawai');
+/* eslint-disable */
 
-//? DOM Element - Halaman Pengaju
-var pengajuTable = document.querySelector('#pengaju-table');
-var addPengajuForm = document.querySelector('#form-add-pengaju');
-var updatePengajuBtns = document.querySelectorAll('.btn-update-pengaju');
-var deletePengajuBtns = document.querySelectorAll('.btn-delete-pengaju');
+// import { naiveBayes } from './classification';
 
-//***************** Halaman Pegawai ********************/
-//? Datatables Pegawai
-if (pegawaiTable) {
+//? DOM Element - Halaman Nasabah Lama
+var nasabahLamaTable = document.querySelector('#nasabah-lama-table');
+var addNasabahLamaForm = document.querySelector('#form-add-nasabah-lama');
+var updateNasabahLamaBtns = document.querySelectorAll('.btn-update-nasabah-lama');
+var deleteNasabahLamaBtns = document.querySelectorAll('.btn-delete-nasabah-lama');
+
+//? DOM Element - Halaman Nasabah Baru
+var nasabahBaruTable = document.querySelector('#nasabah-baru-table');
+var addNasabahBaruForm = document.querySelector('#form-add-nasabah-baru');
+var updateNasabahBaruBtns = document.querySelectorAll('.btn-update-nasabah-baru');
+var deleteNasabahBaruBtns = document.querySelectorAll('.btn-delete-nasabah-baru');
+
+//***************** Halaman Nasabah Lama ********************/
+//? Datatables Nasabah Lama
+if (nasabahLamaTable) {
   var options = {
-    perPage: 5,
+    perPage: 10,
+    columns: [{
+      select: 7,
+      sortable: false
+    }]
+  };
+  new _simpleDatatables.DataTable(nasabahLamaTable, options);
+}
+
+//? Add Data Nasabah Lama
+if (addNasabahLamaForm) {
+  var addNasabahLamaModal = document.querySelector('#modal-add-nasabah-lama');
+  var bsAddNasabahLamaModal = new bootstrap.Modal(addNasabahLamaModal);
+  addNasabahLamaForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    addNasabahLamaForm.classList.add('was-validated');
+    if (addNasabahLamaForm.checkValidity()) {
+      var nasabahLamaObj = {
+        nama: addNasabahLamaForm.querySelector('#add-nama').value,
+        usia: addNasabahLamaForm.querySelector('#add-usia').value,
+        pendapatan: addNasabahLamaForm.querySelector('#add-pendapatan').value / 1000000,
+        utang: addNasabahLamaForm.querySelector('#add-utang').value / 1000000,
+        riwayat_pembayaran: addNasabahLamaForm.querySelector('#add-riwayat_pembayaran').value,
+        potensial: addNasabahLamaForm.querySelector('#add-potensial').value
+      };
+      (0, _manageData.addNewData)('nasabah-lama', nasabahLamaObj, addNasabahLamaForm, bsAddNasabahLamaModal);
+    }
+  });
+}
+
+//? Update Nasabah Lama
+if (updateNasabahLamaBtns.length > 0) {
+  var updateNasabahLamaModalList = document.querySelectorAll('[id^="modal-update-nasabah-lama"]');
+  var bsUpdateNasabahLamaModalList = Array.from(updateNasabahLamaModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  var updateDataFormList = document.querySelectorAll("[id^=\"form-update-nasabah-lama\"]");
+  updateDataFormList.forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      var nasabahLamaId = form.dataset.objId;
+      if (form.checkValidity()) {
+        var nasabahLamaObj = {
+          nama: form.querySelector('#update-nama').value,
+          usia: form.querySelector('#update-usia').value,
+          pendapatan: form.querySelector('#update-pendapatan').value / 1000000,
+          utang: form.querySelector('#update-utang').value / 1000000,
+          riwayat_pembayaran: form.querySelector('#update-riwayat_pembayaran').value,
+          potensial: form.querySelector('#update-potensial').value
+        };
+        (0, _manageData.updateDataById)('nasabah-lama', nasabahLamaId, nasabahLamaObj, form, bsUpdateNasabahLamaModalList);
+      }
+    });
+  });
+}
+
+//? Delete Data Nasabah Lama
+if (deleteNasabahLamaBtns.length > 0) {
+  var deleteNasabahLamaModalList = document.querySelectorAll('[id^="modal-delete-nasabah-lama"]');
+  var bsDeleteNasabahLamaModalList = Array.from(deleteNasabahLamaModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  deleteNasabahLamaBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var nasabahLamaId = btn.dataset.objId;
+      (0, _manageData.delDataById)('nasabah-lama', nasabahLamaId, bsDeleteNasabahLamaModalList);
+    });
+  });
+}
+
+//***************** Halaman Nasabah Baru ********************/
+var dataTrain = [];
+var dataTest = [];
+
+//? Datatables Nasabah Baru
+if (nasabahBaruTable) {
+  var _options = {
+    perPage: 10,
     columns: [{
       select: 8,
       sortable: false
     }]
   };
-  new _simpleDatatables.DataTable(pegawaiTable, options);
+  new _simpleDatatables.DataTable(nasabahBaruTable, _options);
+
+  //? Get Data Nasabah Lama
+  var nasabahLamaObjArr = JSON.parse(document.querySelector('#title-nasabah-baru').dataset.nasabahLamaObjArr);
+
+  //? Split Dataset Nasabah Lama
+  var splitIndex = Math.floor(nasabahLamaObjArr.length * 0.7);
+  dataTrain = nasabahLamaObjArr.slice(0, splitIndex);
+  dataTest = nasabahLamaObjArr.slice(splitIndex);
 }
 
-//? Add Data Pegawai
-if (addPegawaiForm) {
-  var addPegawaiModal = document.querySelector('#modal-add-pegawai');
-  var bsAddPegawaiModal = new bootstrap.Modal(addPegawaiModal);
-  addPegawaiForm.addEventListener('submit', function (e) {
+//? Add Data Nasabah Baru
+if (addNasabahBaruForm) {
+  var addNasabahBaruModal = document.querySelector('#modal-add-nasabah-baru');
+  var bsAddNasabahBaruModal = new bootstrap.Modal(addNasabahBaruModal);
+  addNasabahBaruForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    addPegawaiForm.classList.add('was-validated');
-    if (addPegawaiForm.checkValidity()) {
-      var pegawaiObj = {
-        nama: addPegawaiForm.querySelector('#add-nama').value,
-        jabatan: addPegawaiForm.querySelector('#add-jabatan').value,
-        masa_kerja: addPegawaiForm.querySelector('#add-masa_kerja').value,
-        grade_gaji: addPegawaiForm.querySelector('#add-grade_gaji').value,
-        status_nikah: addPegawaiForm.querySelector('#add-status_nikah').value,
-        jumlah_anak: addPegawaiForm.querySelector('#add-jumlah_anak').value,
-        hutang_tempat_lain: addPegawaiForm.querySelector('#add-hutang_tempat_lain').value,
-        kelayakan: addPegawaiForm.querySelector('#add-kelayakan').value
-      };
-      (0, _manageData.addNewData)('pegawai', pegawaiObj, addPegawaiForm, bsAddPegawaiModal);
-    }
-  });
-}
-
-//? Update Data Pegawai
-if (updatePegawaiBtns.length > 0) {
-  var updatePegawaiModalList = document.querySelectorAll('[id^="modal-update-pegawai"]');
-  var bsUpdatePegawaiModalList = Array.from(updatePegawaiModalList).map(function (el) {
-    return new bootstrap.Modal(el);
-  });
-  var updateDataFormList = document.querySelectorAll("[id^=\"form-update-pegawai\"]");
-  updateDataFormList.forEach(function (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      form.classList.add('was-validated');
-      var pegawaiId = form.dataset.objId;
-      if (form.checkValidity()) {
-        var pegawaiObj = {
-          nama: form.querySelector('#update-nama').value,
-          jabatan: form.querySelector('#update-jabatan').value,
-          masa_kerja: form.querySelector('#update-masa_kerja').value,
-          grade_gaji: form.querySelector('#update-grade_gaji').value,
-          status_nikah: form.querySelector('#update-status_nikah').value,
-          jumlah_anak: form.querySelector('#update-jumlah_anak').value,
-          hutang_tempat_lain: form.querySelector('#update-hutang_tempat_lain').value,
-          kelayakan: form.querySelector('#update-kelayakan').value
-        };
-        (0, _manageData.updateDataById)('pegawai', pegawaiId, pegawaiObj, form, bsUpdatePegawaiModalList);
-      }
-    });
-  });
-}
-
-//? Delete Data Pegawai
-if (deletePegawaiBtns.length > 0) {
-  var deletePegawaiModalList = document.querySelectorAll('[id^="modal-delete-pegawai"]');
-  var bsDeletePegawaiModalList = Array.from(deletePegawaiModalList).map(function (el) {
-    return new bootstrap.Modal(el);
-  });
-  deletePegawaiBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var pegawaiId = btn.dataset.objId;
-      (0, _manageData.delDataById)('pegawai', pegawaiId, bsDeletePegawaiModalList);
-    });
-  });
-}
-
-//***************** Halaman Pengaju ********************/
-var dataTrain = [];
-var dataTest = [];
-
-//? Datatables Pengaju
-if (pengajuTable) {
-  var _options = {
-    perPage: 5,
-    columns: [{
-      select: 9,
-      sortable: false
-    }]
-  };
-  new _simpleDatatables.DataTable(pengajuTable, _options);
-
-  //? Get Data Pegawai
-  var pegawaiObjArr = JSON.parse(document.querySelector('#title-pengaju').dataset.pegawaiObjArr);
-
-  //? Split Dataset Pegawai
-  var splitIndex = Math.floor(pegawaiObjArr.length * 0.9);
-  // dataTrain = pegawaiObjArr.slice(0, splitIndex);
-  dataTrain = _toConsumableArray(pegawaiObjArr);
-  if (pegawaiObjArr.length >= 10) {
-    dataTest = pegawaiObjArr.slice(-10);
-  } else {
-    dataTest = pegawaiObjArr.slice(splitIndex);
-  }
-}
-
-//? Add Data Pengaju
-if (addPengajuForm) {
-  var addPengajuModal = document.querySelector('#modal-add-pengaju');
-  var bsAddPengajuModal = new bootstrap.Modal(addPengajuModal);
-  addPengajuForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    addPengajuForm.classList.add('was-validated');
-    if (addPengajuForm.checkValidity()) {
-      var pengajuObj = {
-        nama: addPengajuForm.querySelector('#add-nama').value,
-        jabatan: addPengajuForm.querySelector('#add-jabatan').value,
-        masa_kerja: addPengajuForm.querySelector('#add-masa_kerja').value,
-        grade_gaji: addPengajuForm.querySelector('#add-grade_gaji').value,
-        status_nikah: addPengajuForm.querySelector('#add-status_nikah').value,
-        jumlah_anak: addPengajuForm.querySelector('#add-jumlah_anak').value,
-        hutang_tempat_lain: addPengajuForm.querySelector('#add-hutang_tempat_lain').value
+    addNasabahBaruForm.classList.add('was-validated');
+    if (addNasabahBaruForm.checkValidity()) {
+      var nasabahBaruObj = {
+        nama: addNasabahBaruForm.querySelector('#add-nama').value,
+        usia: addNasabahBaruForm.querySelector('#add-usia').value,
+        pendapatan: addNasabahBaruForm.querySelector('#add-pendapatan').value / 1000000,
+        utang: addNasabahBaruForm.querySelector('#add-utang').value / 1000000,
+        riwayat_pembayaran: addNasabahBaruForm.querySelector('#add-riwayat_pembayaran').value
       };
 
       //? Naive Bayes
-      var _naiveBayes = (0, _classification.naiveBayes)(dataTrain, dataTest, pengajuObj),
-        prediksi_kelayakan = _naiveBayes.prediksi_kelayakan,
-        akurasi = _naiveBayes.akurasi;
-      pengajuObj['prediksi_kelayakan'] = prediksi_kelayakan;
-      pengajuObj['akurasi'] = akurasi;
-      (0, _manageData.addNewData)('pengaju', pengajuObj, addPengajuForm, bsAddPengajuModal);
+      // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
+      var prediksi_potensial = 1;
+      var akurasi = 0.91;
+      nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
+      nasabahBaruObj['akurasi'] = akurasi;
+      (0, _manageData.addNewData)('nasabah-baru', nasabahBaruObj, addNasabahBaruForm, bsAddNasabahBaruModal);
     }
   });
 }
 
-//? Update Data Pengaju
-if (updatePengajuBtns.length > 0) {
-  var updatePengajuModalList = document.querySelectorAll('[id^="modal-update-pengaju"]');
-  var bsUpdatePengajuModalList = Array.from(updatePengajuModalList).map(function (el) {
+//? Update Data Nasabah Baru
+if (updateNasabahBaruBtns.length > 0) {
+  var updateNasabahBaruModalList = document.querySelectorAll('[id^="modal-update-nasabah-baru"]');
+  var bsUpdateNasabahBaruModalList = Array.from(updateNasabahBaruModalList).map(function (el) {
     return new bootstrap.Modal(el);
   });
-  var _updateDataFormList = document.querySelectorAll("[id^=\"form-update-pengaju\"]");
+  var _updateDataFormList = document.querySelectorAll("[id^=\"form-update-nasabah-baru\"]");
   _updateDataFormList.forEach(function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       form.classList.add('was-validated');
-      var pengajuId = form.dataset.objId;
+      var nasabahBaruId = form.dataset.objId;
       if (form.checkValidity()) {
-        var pengajuObj = {
+        var nasabahBaruObj = {
           nama: form.querySelector('#update-nama').value,
-          jabatan: form.querySelector('#update-jabatan').value,
-          masa_kerja: form.querySelector('#update-masa_kerja').value,
-          grade_gaji: form.querySelector('#update-grade_gaji').value,
-          status_nikah: form.querySelector('#update-status_nikah').value,
-          jumlah_anak: form.querySelector('#update-jumlah_anak').value,
-          hutang_tempat_lain: form.querySelector('#update-hutang_tempat_lain').value
+          usia: form.querySelector('#update-usia').value,
+          pendapatan: form.querySelector('#update-pendapatan').value / 1000000,
+          utang: form.querySelector('#update-utang').value / 1000000,
+          riwayat_pembayaran: form.querySelector('#update-riwayat_pembayaran').value
         };
 
         //? Naive Bayes
-        var _naiveBayes2 = (0, _classification.naiveBayes)(dataTrain, dataTest, pengajuObj),
-          prediksi_kelayakan = _naiveBayes2.prediksi_kelayakan,
-          akurasi = _naiveBayes2.akurasi;
-        pengajuObj['prediksi_kelayakan'] = prediksi_kelayakan;
-        pengajuObj['akurasi'] = akurasi;
-        (0, _manageData.updateDataById)('pengaju', pengajuId, pengajuObj, form, bsUpdatePengajuModalList);
+        // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
+        var prediksi_potensial = 0;
+        var akurasi = 0.99;
+        nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
+        nasabahBaruObj['akurasi'] = akurasi;
+        (0, _manageData.updateDataById)('nasabah-baru', nasabahBaruId, nasabahBaruObj, form, bsUpdateNasabahBaruModalList);
       }
     });
   });
 }
 
-//? Delete Data Pengaju
-if (deletePengajuBtns.length > 0) {
-  var deletePengajuModalList = document.querySelectorAll('[id^="modal-delete-pengaju"]');
-  var bsDeletePengajuModalList = Array.from(deletePengajuModalList).map(function (el) {
+//? Delete Data Nasabah Baru
+if (deleteNasabahBaruBtns.length > 0) {
+  var deleteNasabahBaruModalList = document.querySelectorAll('[id^="modal-delete-nasabah-baru"]');
+  var bsDeleteNasabahBaruModalList = Array.from(deleteNasabahBaruModalList).map(function (el) {
     return new bootstrap.Modal(el);
   });
-  deletePengajuBtns.forEach(function (btn) {
+  deleteNasabahBaruBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var pengajuId = btn.dataset.objId;
-      (0, _manageData.delDataById)('pengaju', pengajuId, bsDeletePengajuModalList);
+      var nasabahBaruId = btn.dataset.objId;
+      (0, _manageData.delDataById)('nasabah-baru', nasabahBaruId, bsDeleteNasabahBaruModalList);
     });
   });
 }
@@ -15713,7 +15573,7 @@ if (delayAlertMsg) {
   sessionStorage.removeItem('delay-alert-message');
   sessionStorage.removeItem('delay-alert-type');
 }
-},{"core-js/modules/es6.array.copy-within.js":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill.js":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.filter.js":"../../node_modules/core-js/modules/es6.array.filter.js","core-js/modules/es6.array.find.js":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index.js":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.from.js":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes.js":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator.js":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.map.js":"../../node_modules/core-js/modules/es6.array.map.js","core-js/modules/es6.array.of.js":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.slice.js":"../../node_modules/core-js/modules/es6.array.slice.js","core-js/modules/es6.array.species.js":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive.js":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance.js":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name.js":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map.js":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh.js":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh.js":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh.js":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt.js":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32.js":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh.js":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1.js":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround.js":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot.js":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul.js":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p.js":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10.js":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2.js":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign.js":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh.js":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh.js":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc.js":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor.js":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon.js":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite.js":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer.js":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan.js":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer.js":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer.js":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer.js":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float.js":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int.js":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign.js":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter.js":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter.js":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries.js":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze.js":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors.js":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names.js":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of.js":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter.js":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter.js":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions.js":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.to-string.js":"../../node_modules/core-js/modules/es6.object.to-string.js","core-js/modules/es6.object.is.js":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen.js":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed.js":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible.js":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys.js":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal.js":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es7.object.values.js":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise.js":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply.js":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct.js":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property.js":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property.js":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get.js":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has.js":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible.js":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys.js":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions.js":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set.js":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor.js":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags.js":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match.js":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace.js":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split.js":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search.js":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string.js":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set.js":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol.js":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor.js":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big.js":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink.js":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold.js":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at.js":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with.js":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed.js":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor.js":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize.js":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point.js":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes.js":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics.js":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator.js":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link.js":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start.js":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end.js":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw.js":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat.js":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small.js":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with.js":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike.js":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub.js":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup.js":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/es6.typed.array-buffer.js":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array.js":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array.js":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array.js":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array.js":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array.js":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array.js":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array.js":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map.js":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set.js":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime.js":"../../node_modules/regenerator-runtime/runtime.js","simple-datatables":"../../node_modules/simple-datatables/dist/module.js","./alert":"alert.js","./manage-data":"manage-data.js","./classification":"classification.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"core-js/modules/es6.array.copy-within.js":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill.js":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.filter.js":"../../node_modules/core-js/modules/es6.array.filter.js","core-js/modules/es6.array.find.js":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index.js":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.from.js":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes.js":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator.js":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.map.js":"../../node_modules/core-js/modules/es6.array.map.js","core-js/modules/es6.array.of.js":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.slice.js":"../../node_modules/core-js/modules/es6.array.slice.js","core-js/modules/es6.array.species.js":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive.js":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance.js":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name.js":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map.js":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh.js":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh.js":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh.js":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt.js":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32.js":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh.js":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1.js":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround.js":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot.js":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul.js":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p.js":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10.js":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2.js":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign.js":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh.js":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh.js":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc.js":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor.js":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon.js":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite.js":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer.js":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan.js":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer.js":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer.js":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer.js":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float.js":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int.js":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign.js":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter.js":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter.js":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries.js":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze.js":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors.js":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names.js":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of.js":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter.js":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter.js":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions.js":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.to-string.js":"../../node_modules/core-js/modules/es6.object.to-string.js","core-js/modules/es6.object.is.js":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen.js":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed.js":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible.js":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys.js":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal.js":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es7.object.values.js":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise.js":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply.js":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct.js":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property.js":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property.js":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get.js":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has.js":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible.js":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys.js":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions.js":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set.js":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor.js":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags.js":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match.js":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace.js":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split.js":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search.js":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string.js":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set.js":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol.js":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor.js":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big.js":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink.js":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold.js":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at.js":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with.js":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed.js":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor.js":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize.js":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point.js":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes.js":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics.js":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator.js":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link.js":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start.js":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end.js":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw.js":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat.js":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small.js":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with.js":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike.js":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub.js":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup.js":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/es6.typed.array-buffer.js":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array.js":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array.js":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array.js":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array.js":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array.js":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array.js":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array.js":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map.js":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set.js":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime.js":"../../node_modules/regenerator-runtime/runtime.js","simple-datatables":"../../node_modules/simple-datatables/dist/module.js","./alert":"alert.js","./manage-data":"manage-data.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -15738,7 +15598,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52701" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50929" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

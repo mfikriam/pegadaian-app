@@ -4,7 +4,7 @@ head
   meta(name='viewport' content='width=device-width, initial-scale=1')
   title= title
   // Favicons
-  link(href='/img/logo-bprp.png' rel='shortcut icon' type='image/png')
+  link(href='/img/icon-pegadaian.png' rel='shortcut icon' type='image/png')
   // Vendor CSS Files
   link(href='/vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
   link(href='/vendor/bootstrap-icons/bootstrap-icons.min.css' rel='stylesheet')
@@ -17,18 +17,18 @@ head
   script(defer src='/js/bundle/bundle.js')
 
 // Navbar
-nav.navbar.navbar-expand-lg.bg-light
+nav.navbar.navbar-expand-lg(data-bs-theme='dark' style='background-color: #37b24d;')
   .container
     a.navbar-brand(href='/')
-      img.d-inline-block.align-top(src='../img/logo-bprp.png' alt='Logo' height='40')
+      img.d-inline-block.align-top(src='../img/logo-pegadaian.png' alt='Logo' height='40')
     button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
       span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       ul.navbar-nav.me-auto.mb-2.mb-lg-0
+        li.nav-item.me-2
+          a.nav-link.fs-5(href='/nasabah-lama' class=`${modelName === 'nasabah-lama' ? 'active' : ''}`) Nasabah Lama
         li.nav-item
-          a.nav-link.fs-5(href='/pegawai' class=`${modelName === 'pegawai' ? 'active' : ''}`) Data Pegawai
-        li.nav-item
-          a.nav-link.fs-5(href='/pengaju' class=`${modelName === 'pengaju' ? 'active' : ''}`) Data Pengaju
+          a.nav-link.fs-5(href='/nasabah-baru' class=`${modelName === 'nasabah-baru' ? 'active' : ''}`) Nasabah Baru
 
 // Alert          
 .row.d-flex.flex-column.align-items-center.justify-content-center

@@ -6,8 +6,8 @@ const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const viewRouter = require('./routes/viewRoutes');
-const pegawaiRouter = require('./routes/pegawaiRoutes');
-const pengajuRouter = require('./routes/pengajuRoutes');
+const nasabahLamaRouter = require('./routes/nasabahLamaRoutes');
+const nasabahBaruRouter = require('./routes/nasabahBaruRoutes');
 
 // Start express app
 const app = express();
@@ -33,8 +33,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/', viewRouter);
-app.use('/api/v1/pegawai', pegawaiRouter);
-app.use('/api/v1/pengaju', pengajuRouter);
+app.use('/api/v1/nasabah-lama', nasabahLamaRouter);
+app.use('/api/v1/nasabah-baru', nasabahBaruRouter);
 
 // Not Found Routes
 app.all('*', (req, res, next) => {

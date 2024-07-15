@@ -11,9 +11,7 @@ export const addNewData = async (modelName, data, form, modal) => {
     });
 
     if (res.data.status === 'success') {
-      const resObj = res.data.data[modelName];
       modal.hide();
-
       delayAlert(`Data ${modelName} berhasil ditambah`, 'success');
     }
   } catch (err) {
@@ -31,9 +29,7 @@ export const updateDataById = async (modelName, objId, data, form, Modals) => {
     });
 
     if (res.data.status === 'success') {
-      const resObj = res.data.data[modelName];
       Modals.forEach((el) => el.hide());
-
       delayAlert(`Data ${modelName} berhasil diubah`, 'success');
     }
   } catch (err) {

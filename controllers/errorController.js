@@ -60,17 +60,13 @@ const handleAggregateErrorDB = (err) => {
 };
 
 const handleFKConstraintErrorDB = (err) =>
-  new AppError(
-    `Invalid data: ${err.table} id is not found. Please insert existed ${err.table} id!`,
-    404,
-  );
+  new AppError(`Invalid data: ${err.table} id is not found. Please insert existed ${err.table} id!`, 404);
 
 const handleSequelizeDBError = () => new AppError('Database error: please contact the admin!', 500);
 
 const handleJWTError = () => new AppError('Invalid token. Plase log in again!', 401);
 
-const handleJWTExpiredError = () =>
-  new AppError('Your token has expired!. Plase log in again!', 401);
+const handleJWTExpiredError = () => new AppError('Your token has expired!. Plase log in again!', 401);
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;

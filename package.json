@@ -1,5 +1,5 @@
 {
-  "name": "bprp-pln-app",
+  "name": "pegadaian-app",
   "version": "1.0.0",
   "description": "Aplikasi Implementasi Skripsi dengan Judul \"Prediksi Nasabah Non Gadai Potensial Pada PT Pegadaian Kantor Cabang Pelita Dengan Menggunakan Metode Support Vector Machine\"",
   "main": "index.js",

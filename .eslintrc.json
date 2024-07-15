@@ -28,6 +28,7 @@
     "arrow-body-style": "off",
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "max-len": "off"
   }
 }

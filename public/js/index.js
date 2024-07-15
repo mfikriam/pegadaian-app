@@ -4,205 +4,188 @@ import { DataTable } from 'simple-datatables';
 
 import { showAlert } from './alert';
 import { addNewData, updateDataById, delDataById } from './manage-data';
-import { naiveBayes } from './classification';
+// import { naiveBayes } from './classification';
 
-//? DOM Element - Halaman Pegawai
-const pegawaiTable = document.querySelector('#pegawai-table');
-const addPegawaiForm = document.querySelector('#form-add-pegawai');
-const updatePegawaiBtns = document.querySelectorAll('.btn-update-pegawai');
-const deletePegawaiBtns = document.querySelectorAll('.btn-delete-pegawai');
+//? DOM Element - Halaman Nasabah Lama
+const nasabahLamaTable = document.querySelector('#nasabah-lama-table');
+const addNasabahLamaForm = document.querySelector('#form-add-nasabah-lama');
+const updateNasabahLamaBtns = document.querySelectorAll('.btn-update-nasabah-lama');
+const deleteNasabahLamaBtns = document.querySelectorAll('.btn-delete-nasabah-lama');
 
-//? DOM Element - Halaman Pengaju
-const pengajuTable = document.querySelector('#pengaju-table');
-const addPengajuForm = document.querySelector('#form-add-pengaju');
-const updatePengajuBtns = document.querySelectorAll('.btn-update-pengaju');
-const deletePengajuBtns = document.querySelectorAll('.btn-delete-pengaju');
+//? DOM Element - Halaman Nasabah Baru
+const nasabahBaruTable = document.querySelector('#nasabah-baru-table');
+const addNasabahBaruForm = document.querySelector('#form-add-nasabah-baru');
+const updateNasabahBaruBtns = document.querySelectorAll('.btn-update-nasabah-baru');
+const deleteNasabahBaruBtns = document.querySelectorAll('.btn-delete-nasabah-baru');
 
-//***************** Halaman Pegawai ********************/
-//? Datatables Pegawai
-if (pegawaiTable) {
+//***************** Halaman Nasabah Lama ********************/
+//? Datatables Nasabah Lama
+if (nasabahLamaTable) {
   const options = {
-    perPage: 5,
-    columns: [{ select: 8, sortable: false }],
+    perPage: 10,
+    columns: [{ select: 7, sortable: false }],
   };
-  new DataTable(pegawaiTable, options);
+  new DataTable(nasabahLamaTable, options);
 }
 
-//? Add Data Pegawai
-if (addPegawaiForm) {
-  const addPegawaiModal = document.querySelector('#modal-add-pegawai');
-  const bsAddPegawaiModal = new bootstrap.Modal(addPegawaiModal);
+//? Add Data Nasabah Lama
+if (addNasabahLamaForm) {
+  const addNasabahLamaModal = document.querySelector('#modal-add-nasabah-lama');
+  const bsAddNasabahLamaModal = new bootstrap.Modal(addNasabahLamaModal);
 
-  addPegawaiForm.addEventListener('submit', (e) => {
+  addNasabahLamaForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    addPegawaiForm.classList.add('was-validated');
+    addNasabahLamaForm.classList.add('was-validated');
 
-    if (addPegawaiForm.checkValidity()) {
-      const pegawaiObj = {
-        nama: addPegawaiForm.querySelector('#add-nama').value,
-        jabatan: addPegawaiForm.querySelector('#add-jabatan').value,
-        masa_kerja: addPegawaiForm.querySelector('#add-masa_kerja').value,
-        grade_gaji: addPegawaiForm.querySelector('#add-grade_gaji').value,
-        status_nikah: addPegawaiForm.querySelector('#add-status_nikah').value,
-        jumlah_anak: addPegawaiForm.querySelector('#add-jumlah_anak').value,
-        hutang_tempat_lain: addPegawaiForm.querySelector('#add-hutang_tempat_lain').value,
-        kelayakan: addPegawaiForm.querySelector('#add-kelayakan').value,
+    if (addNasabahLamaForm.checkValidity()) {
+      const nasabahLamaObj = {
+        nama: addNasabahLamaForm.querySelector('#add-nama').value,
+        usia: addNasabahLamaForm.querySelector('#add-usia').value,
+        pendapatan: addNasabahLamaForm.querySelector('#add-pendapatan').value / 1000000,
+        utang: addNasabahLamaForm.querySelector('#add-utang').value / 1000000,
+        riwayat_pembayaran: addNasabahLamaForm.querySelector('#add-riwayat_pembayaran').value,
+        potensial: addNasabahLamaForm.querySelector('#add-potensial').value,
       };
 
-      addNewData('pegawai', pegawaiObj, addPegawaiForm, bsAddPegawaiModal);
+      addNewData('nasabah-lama', nasabahLamaObj, addNasabahLamaForm, bsAddNasabahLamaModal);
     }
   });
 }
 
-//? Update Data Pegawai
-if (updatePegawaiBtns.length > 0) {
-  const updatePegawaiModalList = document.querySelectorAll('[id^="modal-update-pegawai"]');
-  const bsUpdatePegawaiModalList = Array.from(updatePegawaiModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
-  const updateDataFormList = document.querySelectorAll(`[id^="form-update-pegawai"]`);
+//? Update Nasabah Lama
+if (updateNasabahLamaBtns.length > 0) {
+  const updateNasabahLamaModalList = document.querySelectorAll('[id^="modal-update-nasabah-lama"]');
+  const bsUpdateNasabahLamaModalList = Array.from(updateNasabahLamaModalList).map((el) => new bootstrap.Modal(el));
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-nasabah-lama"]`);
 
   updateDataFormList.forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.classList.add('was-validated');
-      const pegawaiId = form.dataset.objId;
+      const nasabahLamaId = form.dataset.objId;
 
       if (form.checkValidity()) {
-        const pegawaiObj = {
+        const nasabahLamaObj = {
           nama: form.querySelector('#update-nama').value,
-          jabatan: form.querySelector('#update-jabatan').value,
-          masa_kerja: form.querySelector('#update-masa_kerja').value,
-          grade_gaji: form.querySelector('#update-grade_gaji').value,
-          status_nikah: form.querySelector('#update-status_nikah').value,
-          jumlah_anak: form.querySelector('#update-jumlah_anak').value,
-          hutang_tempat_lain: form.querySelector('#update-hutang_tempat_lain').value,
-          kelayakan: form.querySelector('#update-kelayakan').value,
+          usia: form.querySelector('#update-usia').value,
+          pendapatan: form.querySelector('#update-pendapatan').value / 1000000,
+          utang: form.querySelector('#update-utang').value / 1000000,
+          riwayat_pembayaran: form.querySelector('#update-riwayat_pembayaran').value,
+          potensial: form.querySelector('#update-potensial').value,
         };
-        updateDataById('pegawai', pegawaiId, pegawaiObj, form, bsUpdatePegawaiModalList);
+        updateDataById('nasabah-lama', nasabahLamaId, nasabahLamaObj, form, bsUpdateNasabahLamaModalList);
       }
     });
   });
 }
 
-//? Delete Data Pegawai
-if (deletePegawaiBtns.length > 0) {
-  const deletePegawaiModalList = document.querySelectorAll('[id^="modal-delete-pegawai"]');
-  const bsDeletePegawaiModalList = Array.from(deletePegawaiModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
+//? Delete Data Nasabah Lama
+if (deleteNasabahLamaBtns.length > 0) {
+  const deleteNasabahLamaModalList = document.querySelectorAll('[id^="modal-delete-nasabah-lama"]');
+  const bsDeleteNasabahLamaModalList = Array.from(deleteNasabahLamaModalList).map((el) => new bootstrap.Modal(el));
 
-  deletePegawaiBtns.forEach((btn) => {
+  deleteNasabahLamaBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const pegawaiId = btn.dataset.objId;
-      delDataById('pegawai', pegawaiId, bsDeletePegawaiModalList);
+      const nasabahLamaId = btn.dataset.objId;
+      delDataById('nasabah-lama', nasabahLamaId, bsDeleteNasabahLamaModalList);
     });
   });
 }
 
-//***************** Halaman Pengaju ********************/
+//***************** Halaman Nasabah Baru ********************/
 let dataTrain = [];
 let dataTest = [];
 
-//? Datatables Pengaju
-if (pengajuTable) {
+//? Datatables Nasabah Baru
+if (nasabahBaruTable) {
   const options = {
-    perPage: 5,
-    columns: [{ select: 9, sortable: false }],
+    perPage: 10,
+    columns: [{ select: 8, sortable: false }],
   };
-  new DataTable(pengajuTable, options);
+  new DataTable(nasabahBaruTable, options);
 
-  //? Get Data Pegawai
-  const pegawaiObjArr = JSON.parse(document.querySelector('#title-pengaju').dataset.pegawaiObjArr);
+  //? Get Data Nasabah Lama
+  const nasabahLamaObjArr = JSON.parse(document.querySelector('#title-nasabah-baru').dataset.nasabahLamaObjArr);
 
-  //? Split Dataset Pegawai
-  const splitIndex = Math.floor(pegawaiObjArr.length * 0.9);
-  // dataTrain = pegawaiObjArr.slice(0, splitIndex);
-  dataTrain = [...pegawaiObjArr];
-  if (pegawaiObjArr.length >= 10) {
-    dataTest = pegawaiObjArr.slice(-10);
-  } else {
-    dataTest = pegawaiObjArr.slice(splitIndex);
-  }
+  //? Split Dataset Nasabah Lama
+  const splitIndex = Math.floor(nasabahLamaObjArr.length * 0.7);
+  dataTrain = nasabahLamaObjArr.slice(0, splitIndex);
+  dataTest = nasabahLamaObjArr.slice(splitIndex);
 }
 
-//? Add Data Pengaju
-if (addPengajuForm) {
-  const addPengajuModal = document.querySelector('#modal-add-pengaju');
-  const bsAddPengajuModal = new bootstrap.Modal(addPengajuModal);
+//? Add Data Nasabah Baru
+if (addNasabahBaruForm) {
+  const addNasabahBaruModal = document.querySelector('#modal-add-nasabah-baru');
+  const bsAddNasabahBaruModal = new bootstrap.Modal(addNasabahBaruModal);
 
-  addPengajuForm.addEventListener('submit', (e) => {
+  addNasabahBaruForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    addPengajuForm.classList.add('was-validated');
+    addNasabahBaruForm.classList.add('was-validated');
 
-    if (addPengajuForm.checkValidity()) {
-      const pengajuObj = {
-        nama: addPengajuForm.querySelector('#add-nama').value,
-        jabatan: addPengajuForm.querySelector('#add-jabatan').value,
-        masa_kerja: addPengajuForm.querySelector('#add-masa_kerja').value,
-        grade_gaji: addPengajuForm.querySelector('#add-grade_gaji').value,
-        status_nikah: addPengajuForm.querySelector('#add-status_nikah').value,
-        jumlah_anak: addPengajuForm.querySelector('#add-jumlah_anak').value,
-        hutang_tempat_lain: addPengajuForm.querySelector('#add-hutang_tempat_lain').value,
+    if (addNasabahBaruForm.checkValidity()) {
+      const nasabahBaruObj = {
+        nama: addNasabahBaruForm.querySelector('#add-nama').value,
+        usia: addNasabahBaruForm.querySelector('#add-usia').value,
+        pendapatan: addNasabahBaruForm.querySelector('#add-pendapatan').value / 1000000,
+        utang: addNasabahBaruForm.querySelector('#add-utang').value / 1000000,
+        riwayat_pembayaran: addNasabahBaruForm.querySelector('#add-riwayat_pembayaran').value,
       };
 
       //? Naive Bayes
-      const { prediksi_kelayakan, akurasi } = naiveBayes(dataTrain, dataTest, pengajuObj);
-      pengajuObj['prediksi_kelayakan'] = prediksi_kelayakan;
-      pengajuObj['akurasi'] = akurasi;
+      // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
+      const prediksi_potensial = 1;
+      const akurasi = 0.91;
+      nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
+      nasabahBaruObj['akurasi'] = akurasi;
 
-      addNewData('pengaju', pengajuObj, addPengajuForm, bsAddPengajuModal);
+      addNewData('nasabah-baru', nasabahBaruObj, addNasabahBaruForm, bsAddNasabahBaruModal);
     }
   });
 }
 
-//? Update Data Pengaju
-if (updatePengajuBtns.length > 0) {
-  const updatePengajuModalList = document.querySelectorAll('[id^="modal-update-pengaju"]');
-  const bsUpdatePengajuModalList = Array.from(updatePengajuModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
-  const updateDataFormList = document.querySelectorAll(`[id^="form-update-pengaju"]`);
+//? Update Data Nasabah Baru
+if (updateNasabahBaruBtns.length > 0) {
+  const updateNasabahBaruModalList = document.querySelectorAll('[id^="modal-update-nasabah-baru"]');
+  const bsUpdateNasabahBaruModalList = Array.from(updateNasabahBaruModalList).map((el) => new bootstrap.Modal(el));
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-nasabah-baru"]`);
 
   updateDataFormList.forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.classList.add('was-validated');
-      const pengajuId = form.dataset.objId;
+      const nasabahBaruId = form.dataset.objId;
 
       if (form.checkValidity()) {
-        const pengajuObj = {
+        const nasabahBaruObj = {
           nama: form.querySelector('#update-nama').value,
-          jabatan: form.querySelector('#update-jabatan').value,
-          masa_kerja: form.querySelector('#update-masa_kerja').value,
-          grade_gaji: form.querySelector('#update-grade_gaji').value,
-          status_nikah: form.querySelector('#update-status_nikah').value,
-          jumlah_anak: form.querySelector('#update-jumlah_anak').value,
-          hutang_tempat_lain: form.querySelector('#update-hutang_tempat_lain').value,
+          usia: form.querySelector('#update-usia').value,
+          pendapatan: form.querySelector('#update-pendapatan').value / 1000000,
+          utang: form.querySelector('#update-utang').value / 1000000,
+          riwayat_pembayaran: form.querySelector('#update-riwayat_pembayaran').value,
         };
 
         //? Naive Bayes
-        const { prediksi_kelayakan, akurasi } = naiveBayes(dataTrain, dataTest, pengajuObj);
-        pengajuObj['prediksi_kelayakan'] = prediksi_kelayakan;
-        pengajuObj['akurasi'] = akurasi;
+        // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
+        const prediksi_potensial = 0;
+        const akurasi = 0.99;
+        nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
+        nasabahBaruObj['akurasi'] = akurasi;
 
-        updateDataById('pengaju', pengajuId, pengajuObj, form, bsUpdatePengajuModalList);
+        updateDataById('nasabah-baru', nasabahBaruId, nasabahBaruObj, form, bsUpdateNasabahBaruModalList);
       }
     });
   });
 }
 
-//? Delete Data Pengaju
-if (deletePengajuBtns.length > 0) {
-  const deletePengajuModalList = document.querySelectorAll('[id^="modal-delete-pengaju"]');
-  const bsDeletePengajuModalList = Array.from(deletePengajuModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
+//? Delete Data Nasabah Baru
+if (deleteNasabahBaruBtns.length > 0) {
+  const deleteNasabahBaruModalList = document.querySelectorAll('[id^="modal-delete-nasabah-baru"]');
+  const bsDeleteNasabahBaruModalList = Array.from(deleteNasabahBaruModalList).map((el) => new bootstrap.Modal(el));
 
-  deletePengajuBtns.forEach((btn) => {
+  deleteNasabahBaruBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const pengajuId = btn.dataset.objId;
-      delDataById('pengaju', pengajuId, bsDeletePengajuModalList);
+      const nasabahBaruId = btn.dataset.objId;
+      delDataById('nasabah-baru', nasabahBaruId, bsDeleteNasabahBaruModalList);
     });
   });
 }

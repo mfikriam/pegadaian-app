@@ -1,0 +1,132 @@
+extends base
+
+block main
+  .row
+    .col-lg-12
+      .d-flex.justify-content-between.align-items-center
+        h2#title-nasabah-baru(data-nasabah-lama-obj-arr=`${JSON.stringify(nasabahLamaObjArr)}`) Data Nasabah Baru Non Gadai
+        button.btn.btn-primary.m-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-add-nasabah-baru') Tambah
+    .col-lg-12
+      // Table Nasabah Baru
+      .table-responsive
+        table#nasabah-baru-table.table.table-striped.table-sm
+          thead
+            tr
+              th.text-center No
+              th.text-center Nama
+              th.text-center Usia
+              th.text-center Pendapatan
+              th.text-center Utang
+              th.text-center Riwayat Pembayaran
+              th.text-center Prediksi Potensial
+              th.text-center Akurasi
+              th.text-center Aksi
+          tbody
+            each nasabahBaru, index in nasabahBaruObjArr
+              tr
+                td.text-center= index + 1
+                td= nasabahBaru.nama
+                td.text-center #{nasabahBaru.usia} Tahun
+                td.text-center= convertRupiah(nasabahBaru.pendapatan)
+                td.text-center= convertRupiah(nasabahBaru.utang)
+                td.text-center= convertRiwayatPembayaran(nasabahBaru.riwayat_pembayaran)
+                td.text-center= convertPotensial(nasabahBaru.prediksi_potensial)
+                td.text-center= `${nasabahBaru.akurasi * 100}%`
+                td.text-center
+                  button.btn.btn-sm.btn-success.m-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-nasabah-baru-${nasabahBaru.id}`)
+                    i.bi.bi-pencil-square
+                  button.btn.btn-sm.btn-danger.btn--trash-user.m-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-nasabah-baru-${nasabahBaru.id}`)
+                    i.bi.bi-trash
+      // End Table Nasabah Baru
+
+  //- Variables
+  - const riwayatPembayaranOptionValues = ['Tepat Waktu', 'Terlambat 1 Bulan', 'Terlambat 2 Bulan', 'Terlambat 3 Bulan', 'Terlambat >3 Bulan'];
+  - const potensialOptionValues = ['Tidak', 'Ya'];
+
+  // Add Pengaju Nasabah Baru
+  #modal-add-nasabah-baru.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Tambah Data Nasabah Baru
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#form-add-nasabah-baru.row(novalidate)
+            .col-12.mb-3
+              label.form-label(for='add-nama') Nama
+              input#add-nama.form-control(type='text' name='nama' required)
+              .invalid-feedback Masukkan nama nasabah
+            .col-12.mb-3
+              label.form-label(for='add-usia') Usia
+              input#add-usia.form-control(type='number' name='usia' min='18' required)
+              .invalid-feedback Masukkan usia nasabah (>=18)
+            .col-12.mb-3
+              label.form-label(for='add-pendapatan') Pendapatan
+              input#add-pendapatan.form-control(type='number' name='pendapatan' min='0' required)
+              .invalid-feedback Masukkan pendapatan nasabah
+            .col-12.mb-3
+              label.form-label(for='add-utang') Utang
+              input#add-utang.form-control(type='number' name='utang' min='0' required)
+              .invalid-feedback Masukkan utang nasabah
+            .col-12.mb-3
+              label.form-label(for='add-riwayat_pembayaran') Riwayat Pembayaran
+              select#add-riwayat_pembayaran.form-select
+                each riwayat_pembayaran, index in riwayatPembayaranOptionValues
+                  option(value=`${index + 1}`)= riwayat_pembayaran
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button#btn-submit-nasabah-baru.btn.btn-primary(type='submit' form='form-add-nasabah-baru') Submit
+  // End Add Nasabah Baru Modal
+
+  each nasabahBaru in nasabahBaruObjArr
+    // Update Pengaju Modals
+    .modal.fade(id=`modal-update-nasabah-baru-${nasabahBaru.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-scrollable
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Update Data Nasabah Baru
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body
+            form.row(id=`form-update-nasabah-baru-${nasabahBaru.id}` novalidate data-obj-id=nasabahBaru.id)
+              .col-12.mb-3
+                label.form-label(for='update-nama') Nama
+                input#update-nama.form-control(type='text' name='nama' value=nasabahBaru.nama required)
+                .invalid-feedback Masukkan nama nasabah
+              .col-12.mb-3
+                label.form-label(for='update-usia') Usia
+                input#update-usia.form-control(type='number' name='usia' min='18' value=nasabahBaru.usia required)
+                .invalid-feedback Masukkan usia nasabah (>=18)
+              .col-12.mb-3
+                label.form-label(for='update-pendapatan') Pendapatan
+                input#update-pendapatan.form-control(type='number' name='pendapatan' min='0' value=`${nasabahBaru.pendapatan * 1000000}` required)
+                .invalid-feedback Masukkan pendapatan nasabah
+              .col-12.mb-3
+                label.form-label(for='update-utang') Utang
+                input#update-utang.form-control(type='number' name='utang' min='0' value=`${nasabahBaru.utang * 1000000}` required)
+                .invalid-feedback Masukkan utang nasabah
+              .col-12.mb-3
+                label.form-label(for='update-riwayat_pembayaran') Riwayat Pembayaran
+                select#update-riwayat_pembayaran.form-select
+                  each riwayat_pembayaran, index in riwayatPembayaranOptionValues
+                    if index + 1 === nasabahBaru.riwayat_pembayaran
+                      option(value=`${index + 1}` selected)= riwayat_pembayaran
+                    else
+                      option(value=`${index + 1}`)= riwayat_pembayaran
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-info(class=`btn-update-nasabah-baru` type='submit' form=`form-update-nasabah-baru-${nasabahBaru.id}`) Update
+    // End Update Pengaju Modals
+
+    // Delete Nasabah Baru Modals
+    .modal.fade(id=`modal-delete-nasabah-baru-${nasabahBaru.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Konfirmasi Hapus
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body Anda yakin ingin menghapus data nasabah: 
+            span.fw-bold= nasabahBaru.nama
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-danger(class='btn-delete-nasabah-baru' type='button' data-obj-id=nasabahBaru.id) Delete
+    //End Delete Nasabah Baru Modals

@@ -1,30 +1,25 @@
 const { Sequelize } = require('sequelize');
-const pegawaiSchema = require('./pegawaiModel');
-const pengajuSchema = require('./pengajuModel');
+const nasabahLamaSchema = require('./nasabahLamaModel');
+const nasabahBaruSchema = require('./nasabahBaruModel');
 
 // Connect to Database
-const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE,
-  process.env.MYSQL_USERNAME,
-  process.env.MYSQL_PASSWORD,
-  {
-    host: process.env.MYSQL_HOST,
-    dialect: 'mysql',
-    define: {
-      freezeTableName: true,
-    },
-    logging: false,
+const sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USERNAME, process.env.MYSQL_PASSWORD, {
+  host: process.env.MYSQL_HOST,
+  dialect: 'mysql',
+  define: {
+    freezeTableName: true,
   },
-);
+  logging: false,
+});
 
-const Pegawai = sequelize.define('pegawai', pegawaiSchema, {
+const NasabahLama = sequelize.define('nasabah_lama', nasabahLamaSchema, {
   underscored: true,
   timestamps: false,
 });
 
-const Pengaju = sequelize.define('pengaju', pengajuSchema, {
+const NasabahBaru = sequelize.define('nasabah_baru', nasabahBaruSchema, {
   underscored: true,
   timestamps: false,
 });
 
-module.exports = { sequelize, Pegawai, Pengaju };
+module.exports = { sequelize, NasabahLama, NasabahBaru };
