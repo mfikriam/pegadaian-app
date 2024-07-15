@@ -1,0 +1,177 @@
+extends base
+
+block main
+  .row
+    .col-lg-12
+      .d-flex.justify-content-between.align-items-center
+        h2#title-pengaju(data-pegawai-obj-arr=`${JSON.stringify(pegawaiObjArr)}`) Data Pengaju BPRP
+        button.btn.btn-primary.m-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-add-pengaju') Tambah
+    .col-lg-12
+      // Table Pengaju
+      .table-responsive
+        table#pengaju-table.table.table-striped.table-sm
+          thead
+            tr
+              th.text-center Nama
+              th.text-center Jabatan
+              th.text-center Masa Kerja
+              th.text-center Grade Gaji
+              th.text-center Status Nikah
+              th.text-center Jumlah Anak
+              th.text-center Hutang Tempat Lain
+              th.text-center Prediksi Kelayakan
+              th.text-center Akurasi
+              th.text-center Aksi
+          tbody
+            each pengaju in pengajuObjArr
+              tr
+                td= pengaju.nama
+                td= pengaju.jabatan
+                td= pengaju.masa_kerja
+                td= pengaju.grade_gaji
+                td= pengaju.status_nikah
+                td.text-center= pengaju.jumlah_anak
+                td.text-center= pengaju.hutang_tempat_lain
+                td.text-center= pengaju.prediksi_kelayakan
+                td.text-center= `${pengaju.akurasi * 100}%`
+                td.text-center
+                  button.btn.btn-sm.btn-success.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-pengaju-${pengaju.id}` style='width: 100%;') Ubah
+                  button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-pengaju-${pengaju.id}` style='width: 100%;') Hapus
+      // End Table Pengaju
+
+  //- Variables
+  - const jabatanOptionValues = ['Generalis', 'Officer Kinerja', 'TL Teknik', 'TL Rensis', 'Team Leader Administrasi dan Umum', 'TL SAR DAN YAN GAN', 'JTC  Pengaturan Operasi', 'Of Kinerja Transaksi Energi Listrik', 'Plt. Manager ULP', 'JO Pengendalian Piutang'];
+  - const masaKerjaOptionValues = ['< 1 Tahun', '1 - 3 Tahun', '4 - 6 Tahun', '7 - 10 Tahun', '> 10 Tahun'];
+  - const gradeGajiOptionValues = ['Grade 7 - 8', 'Grade 9 - 11', 'Grade 12 - 13'];
+  - const statusNikahOptionValues = ['Menikah', 'Belum Menikah', 'Cerai'];
+  - const jumlahAnakOptionValues = ['0 Anak', '1 - 2 Anak', '3 Anak', '> 3 Anak'];
+  - const hutangTempatLainOptionValues = ['Ya', 'Tidak'];
+  - const kelayakanOptionValues = ['Layak', 'Tidak Layak'];
+
+  // Add Pengaju Modal
+  #modal-add-pengaju.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Tambah Data Pengaju
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#form-add-pengaju.row(novalidate)
+            .col-12.mb-3
+              label.form-label(for='add-nama') Nama
+              input#add-nama.form-control(type='text' name='nama' required)
+              .invalid-feedback Masukkan nama pengaju
+            .col-12.mb-3
+              label.form-label(for='add-jabatan') Jabatan
+              select#add-jabatan.form-select
+                each jabatan in jabatanOptionValues
+                  option(value=jabatan)= jabatan
+            .col-12.mb-3
+              label.form-label(for='add-masa_kerja') Masa Kerja
+              select#add-masa_kerja.form-select
+                each masa_kerja in masaKerjaOptionValues
+                  option(value=masa_kerja)= masa_kerja
+            .col-12.mb-3
+              label.form-label(for='add-grade_gaji') Grade Gaji
+              select#add-grade_gaji.form-select
+                each grade_gaji in gradeGajiOptionValues
+                  option(value=grade_gaji)= grade_gaji
+            .col-12.mb-3
+              label.form-label(for='add-status_nikah') Status Nikah
+              select#add-status_nikah.form-select
+                each status_nikah in statusNikahOptionValues
+                  option(value=status_nikah)= status_nikah
+            .col-12.mb-3
+              label.form-label(for='add-jumlah_anak') Jumlah Anak
+              select#add-jumlah_anak.form-select
+                each jumlah_anak in jumlahAnakOptionValues
+                  option(value=jumlah_anak)= jumlah_anak
+            .col-12.mb-3
+              label.form-label(for='add-hutang_tempat_lain') Hutang Tempat Lain
+              select#add-hutang_tempat_lain.form-select
+                each hutang_tempat_lain in hutangTempatLainOptionValues
+                  option(value=hutang_tempat_lain)= hutang_tempat_lain
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button#btn-submit-pengaju.btn.btn-primary(type='submit' form='form-add-pengaju') Submit
+  // End Add Pengaju Modal
+
+  each pengaju in pengajuObjArr
+    // Update Pengaju Modals
+    .modal.fade(id=`modal-update-pengaju-${pengaju.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-scrollable
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Update Data Pengaju
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body
+            form.row(id=`form-update-pengaju-${pengaju.id}` novalidate data-obj-id=pengaju.id)
+              .col-12.mb-3
+                label.form-label(for='update-nama') Nama
+                input#update-nama.form-control(type='text' name='nama' value=pengaju.nama required)
+                .invalid-feedback Masukkan nama pengaju
+              .col-12.mb-3
+                label.form-label(for='update-jabatan') Jabatan
+                select#update-jabatan.form-select
+                  each jabatan in jabatanOptionValues
+                    if jabatan === pengaju.jabatan
+                      option(value=jabatan selected)= jabatan
+                    else
+                      option(value=jabatan)= jabatan
+              .col-12.mb-3
+                label.form-label(for='update-masa_kerja') Masa Kerja
+                select#update-masa_kerja.form-select
+                  each masa_kerja in masaKerjaOptionValues
+                    if masa_kerja === pengaju.masa_kerja
+                      option(value=masa_kerja selected)= masa_kerja
+                    else
+                      option(value=masa_kerja)= masa_kerja
+              .col-12.mb-3
+                label.form-label(for='update-grade_gaji') Grade Gaji
+                select#update-grade_gaji.form-select
+                  each grade_gaji in gradeGajiOptionValues
+                    if grade_gaji === pengaju.grade_gaji
+                      option(value=grade_gaji selected)= grade_gaji
+                    else
+                      option(value=grade_gaji)= grade_gaji
+              .col-12.mb-3
+                label.form-label(for='update-status_nikah') Status Nikah
+                select#update-status_nikah.form-select
+                  each status_nikah in statusNikahOptionValues
+                    if status_nikah === pengaju.status_nikah
+                      option(value=status_nikah selected)= status_nikah
+                    else
+                      option(value=status_nikah)= status_nikah
+              .col-12.mb-3
+                label.form-label(for='update-jumlah_anak') Jumlah Anak
+                select#update-jumlah_anak.form-select
+                  each jumlah_anak in jumlahAnakOptionValues
+                    if jumlah_anak === pengaju.jumlah_anak
+                      option(value=jumlah_anak selected)= jumlah_anak
+                    else
+                      option(value=jumlah_anak)= jumlah_anak
+              .col-12.mb-3
+                label.form-label(for='update-hutang_tempat_lain') Hutang Tempat Lain
+                select#update-hutang_tempat_lain.form-select
+                  each hutang_tempat_lain in hutangTempatLainOptionValues
+                    if hutang_tempat_lain === pengaju.hutang_tempat_lain
+                      option(value=hutang_tempat_lain selected)= hutang_tempat_lain
+                    else
+                      option(value=hutang_tempat_lain)= hutang_tempat_lain
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-info(class=`btn-update-pengaju` type='submit' form=`form-update-pengaju-${pengaju.id}`) Update
+
+    // Delete Pengaju Modals
+    .modal.fade(id=`modal-delete-pengaju-${pengaju.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Konfirmasi Hapus
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body Anda yakin ingin menghapus data pengaju: 
+            span.fw-bold= pengaju.nama
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-danger(class='btn-delete-pengaju' type='button' data-obj-id=pengaju.id) Delete
+    //End Delete Pengaju Modals

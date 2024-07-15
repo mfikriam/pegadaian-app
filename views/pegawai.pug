@@ -1,0 +1,188 @@
+extends base
+
+block main
+  .row
+    .col-lg-12
+      .d-flex.justify-content-between.align-items-center
+        h2 Data Pegawai PT. PLN (Persero)
+        button.btn.btn-primary.m-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-add-pegawai') Tambah
+    .col-lg-12
+      // Table Pegawai
+      .table-responsive
+        table#pegawai-table.table.table-striped.table-sm
+          thead
+            tr
+              th.text-center Nama
+              th.text-center Jabatan
+              th.text-center Masa Kerja
+              th.text-center Grade Gaji
+              th.text-center Status Nikah
+              th.text-center Jumlah Anak
+              th.text-center Hutang Tempat Lain
+              th.text-center Kelayakan
+              th.text-center Aksi
+          tbody
+            each pegawai in pegawaiObjArr
+              tr
+                td= pegawai.nama
+                td= pegawai.jabatan
+                td= pegawai.masa_kerja
+                td= pegawai.grade_gaji
+                td= pegawai.status_nikah
+                td.text-center= pegawai.jumlah_anak
+                td.text-center= pegawai.hutang_tempat_lain
+                td= pegawai.kelayakan
+                td.text-center
+                  button.btn.btn-sm.btn-success.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-pegawai-${pegawai.id}` style='width: 100%;') Ubah
+                  button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-pegawai-${pegawai.id}` style='width: 100%;') Hapus
+      // End Table Pegawai
+
+  //- Variables
+  - const jabatanOptionValues = ['Generalis', 'Officer Kinerja', 'TL Teknik', 'TL Rensis', 'Team Leader Administrasi dan Umum', 'TL SAR DAN YAN GAN', 'JTC  Pengaturan Operasi', 'Of Kinerja Transaksi Energi Listrik', 'Plt. Manager ULP', 'JO Pengendalian Piutang'];
+  - const masaKerjaOptionValues = ['< 1 Tahun', '1 - 3 Tahun', '4 - 6 Tahun', '7 - 10 Tahun', '> 10 Tahun'];
+  - const gradeGajiOptionValues = ['Grade 7 - 8', 'Grade 9 - 11', 'Grade 12 - 13'];
+  - const statusNikahOptionValues = ['Menikah', 'Belum Menikah', 'Cerai'];
+  - const jumlahAnakOptionValues = ['0 Anak', '1 - 2 Anak', '3 Anak', '> 3 Anak'];
+  - const hutangTempatLainOptionValues = ['Ya', 'Tidak'];
+  - const kelayakanOptionValues = ['Layak', 'Tidak Layak'];
+
+  // Add Pegawai Modal
+  #modal-add-pegawai.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Tambah Data Pegawai
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#form-add-pegawai.row(novalidate)
+            .col-12.mb-3
+              label.form-label(for='add-nama') Nama
+              input#add-nama.form-control(type='text' name='nama' required)
+              .invalid-feedback Masukkan nama pegawai
+            .col-12.mb-3
+              label.form-label(for='add-jabatan') Jabatan
+              select#add-jabatan.form-select
+                each jabatan in jabatanOptionValues
+                  option(value=jabatan)= jabatan
+            .col-12.mb-3
+              label.form-label(for='add-masa_kerja') Masa Kerja
+              select#add-masa_kerja.form-select
+                each masa_kerja in masaKerjaOptionValues
+                  option(value=masa_kerja)= masa_kerja
+            .col-12.mb-3
+              label.form-label(for='add-grade_gaji') Grade Gaji
+              select#add-grade_gaji.form-select
+                each grade_gaji in gradeGajiOptionValues
+                  option(value=grade_gaji)= grade_gaji
+            .col-12.mb-3
+              label.form-label(for='add-status_nikah') Status Nikah
+              select#add-status_nikah.form-select
+                each status_nikah in statusNikahOptionValues
+                  option(value=status_nikah)= status_nikah
+            .col-12.mb-3
+              label.form-label(for='add-jumlah_anak') Jumlah Anak
+              select#add-jumlah_anak.form-select
+                each jumlah_anak in jumlahAnakOptionValues
+                  option(value=jumlah_anak)= jumlah_anak
+            .col-12.mb-3
+              label.form-label(for='add-hutang_tempat_lain') Hutang Tempat Lain
+              select#add-hutang_tempat_lain.form-select
+                each hutang_tempat_lain in hutangTempatLainOptionValues
+                  option(value=hutang_tempat_lain)= hutang_tempat_lain
+            .col-12.mb-3
+              label.form-label(for='add-kelayakan') Kelayakan
+              select#add-kelayakan.form-select
+                each kelayakan in kelayakanOptionValues
+                  option(value=kelayakan)= kelayakan
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button#btn-submit-pegawai.btn.btn-primary(type='submit' form='form-add-pegawai') Submit
+  // End Add Pegawai Modal
+
+  each pegawai in pegawaiObjArr
+    // Update Pegawai Modals
+    .modal.fade(id=`modal-update-pegawai-${pegawai.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-scrollable
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Update Data Pegawai
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body
+            form.row(id=`form-update-pegawai-${pegawai.id}` novalidate data-obj-id=pegawai.id)
+              .col-12.mb-3
+                label.form-label(for='update-nama') Nama
+                input#update-nama.form-control(type='text' name='nama' value=pegawai.nama required)
+                .invalid-feedback Masukkan nama pegawai
+              .col-12.mb-3
+                label.form-label(for='update-jabatan') Jabatan
+                select#update-jabatan.form-select
+                  each jabatan in jabatanOptionValues
+                    if jabatan === pegawai.jabatan
+                      option(value=jabatan selected)= jabatan
+                    else
+                      option(value=jabatan)= jabatan
+              .col-12.mb-3
+                label.form-label(for='update-masa_kerja') Masa Kerja
+                select#update-masa_kerja.form-select
+                  each masa_kerja in masaKerjaOptionValues
+                    if masa_kerja === pegawai.masa_kerja
+                      option(value=masa_kerja selected)= masa_kerja
+                    else
+                      option(value=masa_kerja)= masa_kerja
+              .col-12.mb-3
+                label.form-label(for='update-grade_gaji') Grade Gaji
+                select#update-grade_gaji.form-select
+                  each grade_gaji in gradeGajiOptionValues
+                    if grade_gaji === pegawai.grade_gaji
+                      option(value=grade_gaji selected)= grade_gaji
+                    else
+                      option(value=grade_gaji)= grade_gaji
+              .col-12.mb-3
+                label.form-label(for='update-status_nikah') Status Nikah
+                select#update-status_nikah.form-select
+                  each status_nikah in statusNikahOptionValues
+                    if status_nikah === pegawai.status_nikah
+                      option(value=status_nikah selected)= status_nikah
+                    else
+                      option(value=status_nikah)= status_nikah
+              .col-12.mb-3
+                label.form-label(for='update-jumlah_anak') Jumlah Anak
+                select#update-jumlah_anak.form-select
+                  each jumlah_anak in jumlahAnakOptionValues
+                    if jumlah_anak === pegawai.jumlah_anak
+                      option(value=jumlah_anak selected)= jumlah_anak
+                    else
+                      option(value=jumlah_anak)= jumlah_anak
+              .col-12.mb-3
+                label.form-label(for='update-hutang_tempat_lain') Hutang Tempat Lain
+                select#update-hutang_tempat_lain.form-select
+                  each hutang_tempat_lain in hutangTempatLainOptionValues
+                    if hutang_tempat_lain === pegawai.hutang_tempat_lain
+                      option(value=hutang_tempat_lain selected)= hutang_tempat_lain
+                    else
+                      option(value=hutang_tempat_lain)= hutang_tempat_lain
+              .col-12.mb-3
+                label.form-label(for='update-kelayakan') Kelayakan
+                select#update-kelayakan.form-select
+                  each kelayakan in kelayakanOptionValues
+                    if kelayakan === pegawai.kelayakan
+                      option(value=kelayakan selected)= kelayakan
+                    else
+                      option(value=kelayakan)= kelayakan
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-info(class=`btn-update-pegawai` type='submit' form=`form-update-pegawai-${pegawai.id}`) Update
+
+    // Delete Pegawai Modals
+    .modal.fade(id=`modal-delete-pegawai-${pegawai.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+      .modal-dialog.modal-dialog-centered
+        .modal-content
+          .modal-header
+            h1.modal-title.fs-4 Konfirmasi Hapus
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+          .modal-body Anda yakin ingin menghapus data pegawai: 
+            span.fw-bold= pegawai.nama
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-danger(class='btn-delete-pegawai' type='button' data-obj-id=pegawai.id) Delete
+    //End Delete Pegawai Modals

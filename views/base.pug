@@ -1,0 +1,39 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  title= title
+  // Favicons
+  link(href='/img/logo-bprp.png' rel='shortcut icon' type='image/png')
+  // Vendor CSS Files
+  link(href='/vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
+  link(href='/vendor/bootstrap-icons/bootstrap-icons.min.css' rel='stylesheet')
+  link(href='/vendor/simple-datatables/style.css' rel='stylesheet')
+  // My Own CSS File
+  link(href='/css/style.css' rel='stylesheet')
+  // Vendor JS Files
+  script(defer src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
+  // My Own JS File
+  script(defer src='/js/bundle/bundle.js')
+
+// Navbar
+nav.navbar.navbar-expand-lg.bg-light
+  .container
+    a.navbar-brand(href='/')
+      img.d-inline-block.align-top(src='../img/logo-bprp.png' alt='Logo' height='40')
+    button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarSupportedContent.collapse.navbar-collapse
+      ul.navbar-nav.me-auto.mb-2.mb-lg-0
+        li.nav-item
+          a.nav-link.fs-5(href='/pegawai' class=`${modelName === 'pegawai' ? 'active' : ''}`) Data Pegawai
+        li.nav-item
+          a.nav-link.fs-5(href='/pengaju' class=`${modelName === 'pengaju' ? 'active' : ''}`) Data Pengaju
+
+// Alert          
+.row.d-flex.flex-column.align-items-center.justify-content-center
+  #liveAlertPlaceholder.col-md-6.col-sm-8.position-fixed(style='z-index: 9999; right: 0; bottom: 0;')          
+
+// Main Content
+.container.mt-4
+  block main
