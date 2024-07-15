@@ -4,7 +4,7 @@ import { DataTable } from 'simple-datatables';
 
 import { showAlert } from './alert';
 import { addNewData, updateDataById, delDataById } from './manage-data';
-// import { naiveBayes } from './classification';
+import { classification } from './svm';
 
 //? DOM Element - Halaman Nasabah Lama
 const nasabahLamaTable = document.querySelector('#nasabah-lama-table');
@@ -131,10 +131,8 @@ if (addNasabahBaruForm) {
         riwayat_pembayaran: addNasabahBaruForm.querySelector('#add-riwayat_pembayaran').value,
       };
 
-      //? Naive Bayes
-      // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
-      const prediksi_potensial = 1;
-      const akurasi = 0.91;
+      //? SVM
+      const { prediksi_potensial, akurasi } = classification(dataTrain, dataTest, nasabahBaruObj);
       nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
       nasabahBaruObj['akurasi'] = akurasi;
 
@@ -164,10 +162,9 @@ if (updateNasabahBaruBtns.length > 0) {
           riwayat_pembayaran: form.querySelector('#update-riwayat_pembayaran').value,
         };
 
-        //? Naive Bayes
-        // const { prediksi_potensial, akurasi } = naiveBayes(dataTrain, dataTest, nasabahBaruObj);
-        const prediksi_potensial = 0;
-        const akurasi = 0.99;
+        //? SVM
+        const { prediksi_potensial, akurasi } = classification(dataTrain, dataTest, nasabahBaruObj);
+
         nasabahBaruObj['prediksi_potensial'] = prediksi_potensial;
         nasabahBaruObj['akurasi'] = akurasi;
 
