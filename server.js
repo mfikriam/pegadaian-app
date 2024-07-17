@@ -18,7 +18,7 @@ const db = require('./utils/db');
 db.checkConnection(sequelize);
 
 // Synchronize Database
-// db.syncDB(sequelize); //? Create if not exist
+db.syncDB(sequelize); //? Create if not exist
 // db.forceSyncDB(sequelize); //? Drop and create
 // db.alterSyncDB(sequelize); //? Alter if changed
 
