@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  pegadaian-app:
+    image: mfikriam/pegadaian-app:latest
+    container_name: pegadaian-app
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: pegadaian_db
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: pegadaian
+    ports:
+      - "80:3000"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: pegadaian_db
+      MYSQL_ROOT_PASSWORD: pegadaian
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: pegadaian
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
